@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 class SharedPreferencesManager (context: Context) {
 
-    private val count : Int = 31
+    private val totalCountries : Int = 31
 
     private val preferences = context.getSharedPreferences("countries",
         Context.MODE_PRIVATE)
@@ -235,9 +235,8 @@ class SharedPreferencesManager (context: Context) {
     }
 
 
-
     fun getRandomCountry () : Country {
-        val id = Random.nextInt(1, count+1)
+        val id = Random.nextInt(1, totalCountries+1)
         val name = preferences.getString("name_${id}", null)
         val code = preferences.getString("code_${id}", null)
         val flag = preferences.getString("flag_${id}", null)
@@ -249,7 +248,7 @@ class SharedPreferencesManager (context: Context) {
     fun getRandomCountry (excluded: Int) : Country {
         var id = 0
         do {
-            id = Random.nextInt(1, count+1)
+            id = Random.nextInt(1, totalCountries+1)
         }while (id == excluded)
 
         val name = preferences.getString("name_${id}", null)
@@ -263,8 +262,36 @@ class SharedPreferencesManager (context: Context) {
     fun getRandomCountry (excluded1: Int, excluded2: Int) : Country {
         var id = 0
         do {
-            id = Random.nextInt(1, count+1)
+            id = Random.nextInt(1, totalCountries+1)
         }while (id == excluded1 || id == excluded2)
+
+        val name = preferences.getString("name_${id}", null)
+        val code = preferences.getString("code_${id}", null)
+        val flag = preferences.getString("flag_${id}", null)
+        val area = preferences.getString("area_${id}", null)
+        val population = preferences.getString("population_${id}", null)
+        return Country(id, name, code, flag, area, population)
+    }
+
+    fun getRandomCountry (excluded1: Int, excluded2: Int, excluded3: Int) : Country {
+        var id = 0
+        do {
+            id = Random.nextInt(1, totalCountries+1)
+        }while (id == excluded1 || id == excluded2 || id == excluded3)
+
+        val name = preferences.getString("name_${id}", null)
+        val code = preferences.getString("code_${id}", null)
+        val flag = preferences.getString("flag_${id}", null)
+        val area = preferences.getString("area_${id}", null)
+        val population = preferences.getString("population_${id}", null)
+        return Country(id, name, code, flag, area, population)
+    }
+
+    fun getRandomCountry (excluded1: Int, excluded2: Int, excluded3: Int, excluded4: Int) : Country {
+        var id = 0
+        do {
+            id = Random.nextInt(1, totalCountries+1)
+        }while (id == excluded1 || id == excluded2 || id == excluded3 || id == excluded4)
 
         val name = preferences.getString("name_${id}", null)
         val code = preferences.getString("code_${id}", null)
@@ -276,7 +303,7 @@ class SharedPreferencesManager (context: Context) {
 
     fun getCountriesList () : MutableList<Country> {
         val countries = mutableListOf<Country>()
-        for (id in 1..count) {
+        for (id in 1..totalCountries) {
             val name = preferences.getString("name_${id}", null)
             val code = preferences.getString("code_${id}", null)
             val flag = preferences.getString("flag_${id}", null)

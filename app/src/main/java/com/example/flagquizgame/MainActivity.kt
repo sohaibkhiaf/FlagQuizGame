@@ -61,11 +61,9 @@ class MainActivity : AppCompatActivity() {
 
 
     /* TODO
-    * 5 options not just 3
     * complete countries list
     * launcher activity using handler (shows logo, initializes shared preferences)
     * exit dialog when user clicks back button
-    * try again. message when the user chooses a wrong answer
     * */
 }
 

@@ -13,7 +13,7 @@ class GameFragment : Fragment() {
 
     // views declaration
     private lateinit var nextButton_tv : TextView
-    private lateinit var chooseAnswer : TextView
+    private lateinit var message_tv : TextView
     private lateinit var qFlag_iv : ImageView
 
     // options
@@ -29,8 +29,17 @@ class GameFragment : Fragment() {
     private lateinit var option3Correct_iv : ImageView
     private lateinit var option3Wrong_iv : ImageView
 
+    private lateinit var option4_tv : TextView
+    private lateinit var option4Correct_iv : ImageView
+    private lateinit var option4Wrong_iv : ImageView
+
+    private lateinit var option5_tv : TextView
+    private lateinit var option5Correct_iv : ImageView
+    private lateinit var option5Wrong_iv : ImageView
+
     // initialization of shared preferences manager
     private lateinit var spm : SharedPreferencesManager
+
 
 
     override fun onCreateView(
@@ -60,12 +69,19 @@ class GameFragment : Fragment() {
         option3_tv = view.findViewById(R.id.gameFragment_tv_option3)
         option3Correct_iv = view.findViewById(R.id.gameFragment_iv_option3Correct)
         option3Wrong_iv = view.findViewById(R.id.gameFragment_iv_option3Wrong)
+        option4_tv = view.findViewById(R.id.gameFragment_tv_option4)
+        option4Correct_iv = view.findViewById(R.id.gameFragment_iv_option4Correct)
+        option4Wrong_iv = view.findViewById(R.id.gameFragment_iv_option4Wrong)
+        option5_tv = view.findViewById(R.id.gameFragment_tv_option5)
+        option5Correct_iv = view.findViewById(R.id.gameFragment_iv_option5Correct)
+        option5Wrong_iv = view.findViewById(R.id.gameFragment_iv_option5Wrong)
+
 
         // next button initialization
         nextButton_tv = view.findViewById(R.id.gameFragment_tv_nextButton)
 
         // message text
-        chooseAnswer = view.findViewById(R.id.gameFragment_tv_chooseAnswer)
+        message_tv = view.findViewById(R.id.gameFragment_tv_chooseAnswer)
 
         generateQuestion()
 
@@ -78,6 +94,8 @@ class GameFragment : Fragment() {
     }
 
     private fun resetOptions() {
+        message_tv.text = getText(R.string.game_choose)
+
         option1_tv.setBackgroundResource(R.drawable.normal_option_bg)
         option1_tv.setTextColor(requireContext().getColor( R.color.black))
         option1Correct_iv.visibility = View.GONE
@@ -92,6 +110,16 @@ class GameFragment : Fragment() {
         option3_tv.setTextColor(requireContext().getColor( R.color.black))
         option3Correct_iv.visibility = View.GONE
         option3Wrong_iv.visibility = View.GONE
+
+        option4_tv.setBackgroundResource(R.drawable.normal_option_bg)
+        option4_tv.setTextColor(requireContext().getColor( R.color.black))
+        option4Correct_iv.visibility = View.GONE
+        option4Wrong_iv.visibility = View.GONE
+
+        option5_tv.setBackgroundResource(R.drawable.normal_option_bg)
+        option5_tv.setTextColor(requireContext().getColor( R.color.black))
+        option5Correct_iv.visibility = View.GONE
+        option5Wrong_iv.visibility = View.GONE
     }
 
     private fun generateQuestion() {
@@ -100,7 +128,9 @@ class GameFragment : Fragment() {
         val c1 = spm.getRandomCountry()
         val c2 = spm.getRandomCountry(c1.id)
         val c3 = spm.getRandomCountry(c1.id, c2.id)
-        val countries = listOf(c1, c2, c3)
+        val c4 = spm.getRandomCountry(c1.id, c2.id, c3.id)
+        val c5 = spm.getRandomCountry(c1.id, c2.id, c3.id, c4.id)
+        val countries = listOf(c1, c2, c3, c4, c5)
 
         // select questioned flag country
         val qCountry = countries.random()
@@ -118,6 +148,8 @@ class GameFragment : Fragment() {
         option1_tv.text = c1.name.toString()
         option2_tv.text = c2.name.toString()
         option3_tv.text = c3.name.toString()
+        option4_tv.text = c4.name.toString()
+        option5_tv.text = c5.name.toString()
 
         option1_tv.setOnClickListener {
             option1_tv.setBackgroundResource(R.drawable.pressed_option_bg)
@@ -125,9 +157,10 @@ class GameFragment : Fragment() {
             if (qCountry.id == c1.id) {
                 option1Correct_iv.visibility = View.VISIBLE
                 nextButton_tv.visibility = View.VISIBLE
-                chooseAnswer.visibility = View.GONE
+                message_tv.visibility = View.GONE
             }else {
                 option1Wrong_iv.visibility = View.VISIBLE
+                message_tv.text = getText(R.string.game_try_again)
             }
         }
         option2_tv.setOnClickListener {
@@ -136,9 +169,10 @@ class GameFragment : Fragment() {
             if (qCountry.id == c2.id) {
                 option2Correct_iv.visibility = View.VISIBLE
                 nextButton_tv.visibility = View.VISIBLE
-                chooseAnswer.visibility = View.GONE
+                message_tv.visibility = View.GONE
             }else {
                 option2Wrong_iv.visibility = View.VISIBLE
+                message_tv.text = getText(R.string.game_try_again)
             }
         }
         option3_tv.setOnClickListener {
@@ -147,13 +181,38 @@ class GameFragment : Fragment() {
             if (qCountry.id == c3.id) {
                 option3Correct_iv.visibility = View.VISIBLE
                 nextButton_tv.visibility = View.VISIBLE
-                chooseAnswer.visibility = View.GONE
+                message_tv.visibility = View.GONE
             }else {
                 option3Wrong_iv.visibility = View.VISIBLE
+                message_tv.text = getText(R.string.game_try_again)
+            }
+        }
+        option4_tv.setOnClickListener {
+            option4_tv.setBackgroundResource(R.drawable.pressed_option_bg)
+            option4_tv.setTextColor(requireContext().getColor( R.color.white))
+            if (qCountry.id == c4.id) {
+                option4Correct_iv.visibility = View.VISIBLE
+                nextButton_tv.visibility = View.VISIBLE
+                message_tv.visibility = View.GONE
+            }else {
+                option4Wrong_iv.visibility = View.VISIBLE
+                message_tv.text = getText(R.string.game_try_again)
+            }
+        }
+        option5_tv.setOnClickListener {
+            option5_tv.setBackgroundResource(R.drawable.pressed_option_bg)
+            option5_tv.setTextColor(requireContext().getColor( R.color.white))
+            if (qCountry.id == c5.id) {
+                option5Correct_iv.visibility = View.VISIBLE
+                nextButton_tv.visibility = View.VISIBLE
+                message_tv.visibility = View.GONE
+            }else {
+                option5Wrong_iv.visibility = View.VISIBLE
+                message_tv.text = getText(R.string.game_try_again)
             }
         }
 
-        chooseAnswer.visibility = View.VISIBLE
+        message_tv.visibility = View.VISIBLE
         nextButton_tv.visibility = View.GONE
 
     }
