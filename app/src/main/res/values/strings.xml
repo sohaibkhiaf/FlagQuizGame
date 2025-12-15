@@ -5,4 +5,5 @@
     <string name="game_choose">Choose an answer.</string>
     <string name="game_next">Next ></string>
     <string name="game_try_again">Try again.</string>
+    <string name="main_press_back">Press back again to exit</string>
 </resources>

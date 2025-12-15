@@ -8,7 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class CountriesRVAdapter(val countries : List<Country> )
+class CountriesRVAdapter(val countries : ArrayList<Country> )
     : RecyclerView.Adapter<CountriesRVAdapter.CountryViewHolder>() {
 
     class CountryViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView){

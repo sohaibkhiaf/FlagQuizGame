@@ -301,8 +301,8 @@ class SharedPreferencesManager (context: Context) {
         return Country(id, name, code, flag, area, population)
     }
 
-    fun getCountriesList () : MutableList<Country> {
-        val countries = mutableListOf<Country>()
+    fun getCountriesList () : ArrayList<Country> {
+        val countries = arrayListOf<Country>()
         for (id in 1..totalCountries) {
             val name = preferences.getString("name_${id}", null)
             val code = preferences.getString("code_${id}", null)
