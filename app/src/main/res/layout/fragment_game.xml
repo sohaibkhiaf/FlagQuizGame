@@ -21,7 +21,7 @@
             android:layout_marginTop="@dimen/_20sdp"
             android:background="@drawable/flag_image_container_bg"
             android:orientation="horizontal"
-            android:padding="@dimen/_6sdp"
+            android:padding="@dimen/_22sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

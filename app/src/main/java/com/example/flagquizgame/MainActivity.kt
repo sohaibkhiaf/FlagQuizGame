@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.ivDiscoverButton.setOnClickListener {
-            // open archive fragment
+            // open discover fragment
             if (selected != ARCH) {
                 openDiscoverFragment()
                 selected = ARCH
