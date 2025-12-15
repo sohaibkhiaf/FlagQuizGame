@@ -15,8 +15,6 @@ class MainActivity : AppCompatActivity() {
     private var lastBackPressedTime : Long = 0
     private val EXIT_INTERVAL : Int = 2000
 
-
-
     private var countries : ArrayList<Country>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,10 +92,5 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-
-    /* TODO
-    * complete countries list
-    * exit dialog when user clicks back button
-    * */
 }
 

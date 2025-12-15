@@ -140,8 +140,6 @@ class GameFragment : Fragment() {
             requireContext().packageName)
         if (flagResID != 0) {
             qFlag_iv.setImageResource(flagResID)
-        }else {
-            Toast.makeText(requireContext(), "flag resource id = 0", Toast.LENGTH_SHORT).show()
         }
 
         // set options text
