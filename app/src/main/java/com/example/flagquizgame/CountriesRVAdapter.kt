@@ -6,9 +6,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.flagquizgame.database.Country
+import com.example.flagquizgame.database.CountryDatabase
+import kotlinx.coroutines.launch
 
-class CountriesRVAdapter(val countries : ArrayList<Country> )
+class CountriesRVAdapter(var countries : MutableList<Country>, val lifecycleScope: LifecycleCoroutineScope )
     : RecyclerView.Adapter<CountriesRVAdapter.CountryViewHolder>() {
 
     class CountryViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -34,12 +40,26 @@ class CountriesRVAdapter(val countries : ArrayList<Country> )
             holder.flag_iv.setImageResource(flagResID)
         }
 
-        holder.name_tv.text = "${country.name}"
+        holder.name_tv.text = country.name
         holder.area_tv.text = country.area
         holder.population_tv.text = country.population
 
         holder.itemView.setOnClickListener {
             Toast.makeText(holder.itemView.context, country.code, Toast.LENGTH_SHORT).show()
+        }
+
+        val currentItemID = position+1
+        val nextItemID = currentItemID+1
+
+        if ( (currentItemID) >= countries.size ){
+            val db = CountryDatabase.getDatabase(holder.itemView.context)
+            val countryDao = db.countryDao()
+
+            lifecycleScope.launch {
+                countries = countryDao.getNextTenElements(nextItemID).toMutableList()
+                notifyItemRangeInserted(currentItemID, itemCount)
+            }
+
         }
     }
 

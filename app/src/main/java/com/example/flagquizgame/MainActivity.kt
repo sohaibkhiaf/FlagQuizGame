@@ -13,9 +13,7 @@ private var selected : String? = null
 class MainActivity : AppCompatActivity() {
 
     private var lastBackPressedTime : Long = 0
-    private val EXIT_INTERVAL : Int = 2000
-
-    private var countries : ArrayList<Country>? = null
+    private val exitInterval : Int = 2000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                 override fun handleOnBackPressed() {
                     val currentTime = System.currentTimeMillis()
 
-                    if ( (currentTime - lastBackPressedTime ) < EXIT_INTERVAL){
+                    if ( (currentTime - lastBackPressedTime ) < exitInterval){
                         finishAffinity()
                     }else {
                         lastBackPressedTime = currentTime
@@ -43,14 +41,11 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        val spm = SharedPreferencesManager(this)
-        countries = spm.getCountriesList()
-
         if (selected == GAME || selected == null) {
             openGameFragment()
             selected = GAME
-            binding.ivGameButton.setColorFilter(getColor(R.color.black))
-            binding.ivDiscoverButton.setColorFilter(getColor(R.color.white))
+            binding.ivGameButton.setImageDrawable(getDrawable(R.drawable.icon_controller_selected))
+            binding.ivDiscoverButton.setImageDrawable(getDrawable(R.drawable.icon_flag))
         }
 
         binding.ivGameButton.setOnClickListener {
@@ -58,8 +53,8 @@ class MainActivity : AppCompatActivity() {
             if (selected != GAME) {
                 openGameFragment()
                 selected = GAME
-                binding.ivGameButton.setColorFilter(getColor(R.color.black))
-                binding.ivDiscoverButton.setColorFilter(getColor(R.color.white))
+                binding.ivGameButton.setImageDrawable(getDrawable(R.drawable.icon_controller_selected))
+                binding.ivDiscoverButton.setImageDrawable(getDrawable(R.drawable.icon_flag))
             }
         }
 
@@ -68,8 +63,8 @@ class MainActivity : AppCompatActivity() {
             if (selected != ARCH) {
                 openDiscoverFragment()
                 selected = ARCH
-                binding.ivGameButton.setColorFilter(getColor(R.color.white))
-                binding.ivDiscoverButton.setColorFilter(getColor(R.color.black))
+                binding.ivGameButton.setImageDrawable(getDrawable(R.drawable.icon_controller))
+                binding.ivDiscoverButton.setImageDrawable(getDrawable(R.drawable.icon_flag_selected))
             }
         }
 
@@ -83,12 +78,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openDiscoverFragment () {
-        val dFragment = DiscoverFragment()
-        val bundle = Bundle()
-        bundle.putParcelableArrayList("countries", countries)
-        dFragment.arguments = bundle
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fl_fragmentLayout, dFragment)
+            .replace(R.id.fl_fragmentLayout, DiscoverFragment())
             .commit()
     }
 

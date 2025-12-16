@@ -237,7 +237,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/gameFragment_tv_chooseAnswer"
+            android:id="@+id/gameFragment_tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_6sdp"

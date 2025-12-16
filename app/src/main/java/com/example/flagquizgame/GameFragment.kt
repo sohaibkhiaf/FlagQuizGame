@@ -7,39 +7,37 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import com.example.flagquizgame.database.CountryDatabase
+import kotlinx.coroutines.launch
 
 class GameFragment : Fragment() {
 
     // views declaration
-    private lateinit var nextButton_tv : TextView
-    private lateinit var message_tv : TextView
-    private lateinit var qFlag_iv : ImageView
+    private lateinit var nextButtonTv : TextView
+    private lateinit var messageTv : TextView
+    private lateinit var qFlagIv : ImageView
 
     // options
-    private lateinit var option1_tv : TextView
-    private lateinit var option1Correct_iv : ImageView
-    private lateinit var option1Wrong_iv : ImageView
+    private lateinit var option1Tv : TextView
+    private lateinit var option1CorrectIv : ImageView
+    private lateinit var option1WrongIv : ImageView
 
-    private lateinit var option2_tv : TextView
-    private lateinit var option2Correct_iv : ImageView
-    private lateinit var option2Wrong_iv : ImageView
+    private lateinit var option2Tv : TextView
+    private lateinit var option2CorrectIv : ImageView
+    private lateinit var option2WrongIv : ImageView
 
-    private lateinit var option3_tv : TextView
-    private lateinit var option3Correct_iv : ImageView
-    private lateinit var option3Wrong_iv : ImageView
+    private lateinit var option3Tv : TextView
+    private lateinit var option3CorrectIv : ImageView
+    private lateinit var option3WrongIv : ImageView
 
-    private lateinit var option4_tv : TextView
-    private lateinit var option4Correct_iv : ImageView
-    private lateinit var option4Wrong_iv : ImageView
+    private lateinit var option4Tv : TextView
+    private lateinit var option4CorrectIv : ImageView
+    private lateinit var option4WrongIv : ImageView
 
-    private lateinit var option5_tv : TextView
-    private lateinit var option5Correct_iv : ImageView
-    private lateinit var option5Wrong_iv : ImageView
-
-    // initialization of shared preferences manager
-    private lateinit var spm : SharedPreferencesManager
-
+    private lateinit var option5Tv : TextView
+    private lateinit var option5CorrectIv : ImageView
+    private lateinit var option5WrongIv : ImageView
 
 
     override fun onCreateView(
@@ -53,165 +51,168 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // shared preferences initialization
-        spm = SharedPreferencesManager(requireContext())
-
         // questioned flag initialization
-        qFlag_iv = view.findViewById(R.id.gameFragment_iv_flag)
+        qFlagIv = view.findViewById(R.id.gameFragment_iv_flag)
 
         // options initialization
-        option1_tv = view.findViewById(R.id.gameFragment_tv_option1)
-        option1Correct_iv = view.findViewById(R.id.gameFragment_iv_option1Correct)
-        option1Wrong_iv = view.findViewById(R.id.gameFragment_iv_option1Wrong)
-        option2_tv = view.findViewById(R.id.gameFragment_tv_option2)
-        option2Correct_iv = view.findViewById(R.id.gameFragment_iv_option2Correct)
-        option2Wrong_iv = view.findViewById(R.id.gameFragment_iv_option2Wrong)
-        option3_tv = view.findViewById(R.id.gameFragment_tv_option3)
-        option3Correct_iv = view.findViewById(R.id.gameFragment_iv_option3Correct)
-        option3Wrong_iv = view.findViewById(R.id.gameFragment_iv_option3Wrong)
-        option4_tv = view.findViewById(R.id.gameFragment_tv_option4)
-        option4Correct_iv = view.findViewById(R.id.gameFragment_iv_option4Correct)
-        option4Wrong_iv = view.findViewById(R.id.gameFragment_iv_option4Wrong)
-        option5_tv = view.findViewById(R.id.gameFragment_tv_option5)
-        option5Correct_iv = view.findViewById(R.id.gameFragment_iv_option5Correct)
-        option5Wrong_iv = view.findViewById(R.id.gameFragment_iv_option5Wrong)
-
+        option1Tv = view.findViewById(R.id.gameFragment_tv_option1)
+        option1CorrectIv = view.findViewById(R.id.gameFragment_iv_option1Correct)
+        option1WrongIv = view.findViewById(R.id.gameFragment_iv_option1Wrong)
+        option2Tv = view.findViewById(R.id.gameFragment_tv_option2)
+        option2CorrectIv = view.findViewById(R.id.gameFragment_iv_option2Correct)
+        option2WrongIv = view.findViewById(R.id.gameFragment_iv_option2Wrong)
+        option3Tv = view.findViewById(R.id.gameFragment_tv_option3)
+        option3CorrectIv = view.findViewById(R.id.gameFragment_iv_option3Correct)
+        option3WrongIv = view.findViewById(R.id.gameFragment_iv_option3Wrong)
+        option4Tv = view.findViewById(R.id.gameFragment_tv_option4)
+        option4CorrectIv = view.findViewById(R.id.gameFragment_iv_option4Correct)
+        option4WrongIv = view.findViewById(R.id.gameFragment_iv_option4Wrong)
+        option5Tv = view.findViewById(R.id.gameFragment_tv_option5)
+        option5CorrectIv = view.findViewById(R.id.gameFragment_iv_option5Correct)
+        option5WrongIv = view.findViewById(R.id.gameFragment_iv_option5Wrong)
 
         // next button initialization
-        nextButton_tv = view.findViewById(R.id.gameFragment_tv_nextButton)
+        nextButtonTv = view.findViewById(R.id.gameFragment_tv_nextButton)
 
         // message text
-        message_tv = view.findViewById(R.id.gameFragment_tv_chooseAnswer)
+        messageTv = view.findViewById(R.id.gameFragment_tv_message)
 
         generateQuestion()
 
-        nextButton_tv.setOnClickListener {
+        nextButtonTv.setOnClickListener {
             resetOptions()
             generateQuestion()
-            nextButton_tv.visibility = View.INVISIBLE
+            nextButtonTv.visibility = View.INVISIBLE
         }
 
     }
 
     private fun resetOptions() {
-        message_tv.text = getText(R.string.game_choose)
+        messageTv.text = getText(R.string.game_choose)
 
-        option1_tv.setBackgroundResource(R.drawable.normal_option_bg)
-        option1_tv.setTextColor(requireContext().getColor( R.color.black))
-        option1Correct_iv.visibility = View.GONE
-        option1Wrong_iv.visibility = View.GONE
+        option1Tv.setBackgroundResource(R.drawable.normal_option_bg)
+        option1Tv.setTextColor(requireContext().getColor( R.color.black))
+        option1CorrectIv.visibility = View.GONE
+        option1WrongIv.visibility = View.GONE
 
-        option2_tv.setBackgroundResource(R.drawable.normal_option_bg)
-        option2_tv.setTextColor(requireContext().getColor( R.color.black))
-        option2Correct_iv.visibility = View.GONE
-        option2Wrong_iv.visibility = View.GONE
+        option2Tv.setBackgroundResource(R.drawable.normal_option_bg)
+        option2Tv.setTextColor(requireContext().getColor( R.color.black))
+        option2CorrectIv.visibility = View.GONE
+        option2WrongIv.visibility = View.GONE
 
-        option3_tv.setBackgroundResource(R.drawable.normal_option_bg)
-        option3_tv.setTextColor(requireContext().getColor( R.color.black))
-        option3Correct_iv.visibility = View.GONE
-        option3Wrong_iv.visibility = View.GONE
+        option3Tv.setBackgroundResource(R.drawable.normal_option_bg)
+        option3Tv.setTextColor(requireContext().getColor( R.color.black))
+        option3CorrectIv.visibility = View.GONE
+        option3WrongIv.visibility = View.GONE
 
-        option4_tv.setBackgroundResource(R.drawable.normal_option_bg)
-        option4_tv.setTextColor(requireContext().getColor( R.color.black))
-        option4Correct_iv.visibility = View.GONE
-        option4Wrong_iv.visibility = View.GONE
+        option4Tv.setBackgroundResource(R.drawable.normal_option_bg)
+        option4Tv.setTextColor(requireContext().getColor( R.color.black))
+        option4CorrectIv.visibility = View.GONE
+        option4WrongIv.visibility = View.GONE
 
-        option5_tv.setBackgroundResource(R.drawable.normal_option_bg)
-        option5_tv.setTextColor(requireContext().getColor( R.color.black))
-        option5Correct_iv.visibility = View.GONE
-        option5Wrong_iv.visibility = View.GONE
+        option5Tv.setBackgroundResource(R.drawable.normal_option_bg)
+        option5Tv.setTextColor(requireContext().getColor( R.color.black))
+        option5CorrectIv.visibility = View.GONE
+        option5WrongIv.visibility = View.GONE
     }
 
     private fun generateQuestion() {
 
-        // retrieve 3 random countries
-        val c1 = spm.getRandomCountry()
-        val c2 = spm.getRandomCountry(c1.id)
-        val c3 = spm.getRandomCountry(c1.id, c2.id)
-        val c4 = spm.getRandomCountry(c1.id, c2.id, c3.id)
-        val c5 = spm.getRandomCountry(c1.id, c2.id, c3.id, c4.id)
-        val countries = listOf(c1, c2, c3, c4, c5)
+        val db = CountryDatabase.getDatabase(requireContext())
+        val countryDao = db.countryDao()
 
-        // select questioned flag country
-        val qCountry = countries.random()
+        lifecycleScope.launch {
 
-        // retrieve questioned flag
-        val flagResID = resources.getIdentifier(qCountry.flag, "drawable",
-            requireContext().packageName)
-        if (flagResID != 0) {
-            qFlag_iv.setImageResource(flagResID)
+            // retrieve 3 random countries
+            val c1 = countryDao.getRandomCountry()
+            val c2 = countryDao.getRandomCountry(c1.id)
+            val c3 = countryDao.getRandomCountry(c1.id, c2.id)
+            val c4 = countryDao.getRandomCountry(c1.id, c2.id, c3.id)
+            val c5 = countryDao.getRandomCountry(c1.id, c2.id, c3.id, c4.id)
+            val countries = listOf(c1, c2, c3, c4, c5)
+
+            // select questioned flag country
+            val qCountry = countries.random()
+
+            // retrieve questioned flag
+            val flagResID = resources.getIdentifier(qCountry.flag, "drawable",
+                requireContext().packageName)
+            if (flagResID != 0) {
+                qFlagIv.setImageResource(flagResID)
+            }
+
+            // set options text
+            option1Tv.text = c1.name
+            option2Tv.text = c2.name
+            option3Tv.text = c3.name
+            option4Tv.text = c4.name
+            option5Tv.text = c5.name
+
+            option1Tv.setOnClickListener {
+                option1Tv.setBackgroundResource(R.drawable.pressed_option_bg)
+                option1Tv.setTextColor(requireContext().getColor( R.color.white))
+                if (qCountry.id == c1.id) {
+                    option1CorrectIv.visibility = View.VISIBLE
+                    nextButtonTv.visibility = View.VISIBLE
+                    messageTv.visibility = View.GONE
+                }else {
+                    option1WrongIv.visibility = View.VISIBLE
+                    messageTv.text = getText(R.string.game_try_again)
+                }
+            }
+            option2Tv.setOnClickListener {
+                option2Tv.setBackgroundResource(R.drawable.pressed_option_bg)
+                option2Tv.setTextColor(requireContext().getColor( R.color.white))
+                if (qCountry.id == c2.id) {
+                    option2CorrectIv.visibility = View.VISIBLE
+                    nextButtonTv.visibility = View.VISIBLE
+                    messageTv.visibility = View.GONE
+                }else {
+                    option2WrongIv.visibility = View.VISIBLE
+                    messageTv.text = getText(R.string.game_try_again)
+                }
+            }
+            option3Tv.setOnClickListener {
+                option3Tv.setBackgroundResource(R.drawable.pressed_option_bg)
+                option3Tv.setTextColor(requireContext().getColor( R.color.white))
+                if (qCountry.id == c3.id) {
+                    option3CorrectIv.visibility = View.VISIBLE
+                    nextButtonTv.visibility = View.VISIBLE
+                    messageTv.visibility = View.GONE
+                }else {
+                    option3WrongIv.visibility = View.VISIBLE
+                    messageTv.text = getText(R.string.game_try_again)
+                }
+            }
+            option4Tv.setOnClickListener {
+                option4Tv.setBackgroundResource(R.drawable.pressed_option_bg)
+                option4Tv.setTextColor(requireContext().getColor( R.color.white))
+                if (qCountry.id == c4.id) {
+                    option4CorrectIv.visibility = View.VISIBLE
+                    nextButtonTv.visibility = View.VISIBLE
+                    messageTv.visibility = View.GONE
+                }else {
+                    option4WrongIv.visibility = View.VISIBLE
+                    messageTv.text = getText(R.string.game_try_again)
+                }
+            }
+            option5Tv.setOnClickListener {
+                option5Tv.setBackgroundResource(R.drawable.pressed_option_bg)
+                option5Tv.setTextColor(requireContext().getColor( R.color.white))
+                if (qCountry.id == c5.id) {
+                    option5CorrectIv.visibility = View.VISIBLE
+                    nextButtonTv.visibility = View.VISIBLE
+                    messageTv.visibility = View.GONE
+                }else {
+                    option5WrongIv.visibility = View.VISIBLE
+                    messageTv.text = getText(R.string.game_try_again)
+                }
+            }
+
+            messageTv.visibility = View.VISIBLE
+            nextButtonTv.visibility = View.GONE
         }
 
-        // set options text
-        option1_tv.text = c1.name.toString()
-        option2_tv.text = c2.name.toString()
-        option3_tv.text = c3.name.toString()
-        option4_tv.text = c4.name.toString()
-        option5_tv.text = c5.name.toString()
-
-        option1_tv.setOnClickListener {
-            option1_tv.setBackgroundResource(R.drawable.pressed_option_bg)
-            option1_tv.setTextColor(requireContext().getColor( R.color.white))
-            if (qCountry.id == c1.id) {
-                option1Correct_iv.visibility = View.VISIBLE
-                nextButton_tv.visibility = View.VISIBLE
-                message_tv.visibility = View.GONE
-            }else {
-                option1Wrong_iv.visibility = View.VISIBLE
-                message_tv.text = getText(R.string.game_try_again)
-            }
-        }
-        option2_tv.setOnClickListener {
-            option2_tv.setBackgroundResource(R.drawable.pressed_option_bg)
-            option2_tv.setTextColor(requireContext().getColor( R.color.white))
-            if (qCountry.id == c2.id) {
-                option2Correct_iv.visibility = View.VISIBLE
-                nextButton_tv.visibility = View.VISIBLE
-                message_tv.visibility = View.GONE
-            }else {
-                option2Wrong_iv.visibility = View.VISIBLE
-                message_tv.text = getText(R.string.game_try_again)
-            }
-        }
-        option3_tv.setOnClickListener {
-            option3_tv.setBackgroundResource(R.drawable.pressed_option_bg)
-            option3_tv.setTextColor(requireContext().getColor( R.color.white))
-            if (qCountry.id == c3.id) {
-                option3Correct_iv.visibility = View.VISIBLE
-                nextButton_tv.visibility = View.VISIBLE
-                message_tv.visibility = View.GONE
-            }else {
-                option3Wrong_iv.visibility = View.VISIBLE
-                message_tv.text = getText(R.string.game_try_again)
-            }
-        }
-        option4_tv.setOnClickListener {
-            option4_tv.setBackgroundResource(R.drawable.pressed_option_bg)
-            option4_tv.setTextColor(requireContext().getColor( R.color.white))
-            if (qCountry.id == c4.id) {
-                option4Correct_iv.visibility = View.VISIBLE
-                nextButton_tv.visibility = View.VISIBLE
-                message_tv.visibility = View.GONE
-            }else {
-                option4Wrong_iv.visibility = View.VISIBLE
-                message_tv.text = getText(R.string.game_try_again)
-            }
-        }
-        option5_tv.setOnClickListener {
-            option5_tv.setBackgroundResource(R.drawable.pressed_option_bg)
-            option5_tv.setTextColor(requireContext().getColor( R.color.white))
-            if (qCountry.id == c5.id) {
-                option5Correct_iv.visibility = View.VISIBLE
-                nextButton_tv.visibility = View.VISIBLE
-                message_tv.visibility = View.GONE
-            }else {
-                option5Wrong_iv.visibility = View.VISIBLE
-                message_tv.text = getText(R.string.game_try_again)
-            }
-        }
-
-        message_tv.visibility = View.VISIBLE
-        nextButton_tv.visibility = View.GONE
 
     }
 
